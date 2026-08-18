@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpoTest · Radiología</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--txt:#202534;--muted:#687083;--pri:#5856d6;--ok:#168a55;--bad:#c93c3c;--line:#e3e6ee}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Arial,sans-serif;line-height:1.5}
+main{max-width:780px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{font-size:1.5rem;font-weight:900}.pill{padding:7px 11px;background:#ececff;border-radius:20px;color:var(--pri);font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:16px;box-shadow:0 5px 20px #00000008}
+h1,h2{line-height:1.2}.muted{color:var(--muted)}.grid{display:grid;gap:12px}
+button{font:inherit}.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:800;cursor:pointer}
+.primary{background:var(--pri);color:white}.secondary{background:white;border:1px solid var(--line);color:var(--txt)}
+.answer{width:100%;text-align:left;background:white;border:2px solid var(--line);border-radius:14px;padding:14px;cursor:pointer}
+.answer.correct{border-color:var(--ok);background:#eefaf4}.answer.wrong{border-color:var(--bad);background:#fff0f0}
+.answer:disabled{cursor:default}.progress{height:10px;background:#e9ebf2;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--pri)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.hidden{display:none}
+.score{font-size:3rem;font-weight:900;color:var(--pri)}.rankrow{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}
+.small{font-size:.9rem}
+</style>
+</head>
+<body><main>
+<div class="top"><div class="logo">📚 OpoTest</div><div class="pill">🏆 Ranking</div></div>
+
+<section id="home" class="card">
+<h1>Tu entrenamiento para las oposiciones 💪</h1>
+<p class="muted">Primera versión con contenido de tus apuntes: Radiología Digital + RIS/PACS/DICOM.</p>
+<div class="grid">
+<button class="btn primary" onclick="start('digital')">🩻 Radiología Digital · 15 preguntas</button>
+<button class="btn secondary" onclick="start('ris')">🏥 RIS / PACS / DICOM · 12 preguntas</button>
+<button class="btn secondary" onclick="ranking()">🏆 Ver ranking</button>
+</div>
+</section>
+
+<section id="quiz" class="card hidden">
+<div style="display:flex;justify-content:space-between"><strong id="count"></strong><strong id="pts">0 puntos</strong></div>
+<div class="progress" style="margin:12px 0 22px"><div id="bar" class="bar"></div></div>
+<h2 id="q"></h2><div id="answers" class="grid"></div>
+<div id="feedback" class="card hidden" style="margin-top:15px;margin-bottom:0"></div>
+<div class="actions"><button id="next" class="btn primary hidden" onclick="next()">Siguiente ➜</button></div>
+</section>
+
+<section id="result" class="card hidden">
+<h2>🎉 Test terminado</h2><div id="score" class="score"></div><p id="resultText"></p>
+<div class="actions"><button class="btn primary" onclick="again()">🔄 Repetir</button><button class="btn secondary" onclick="ranking()">🏆 Ranking</button><button class="btn secondary" onclick="home()">🏠 Inicio</button></div>
+</section>
+
+<section id="rank" class="card hidden"><h2>🏆 Ranking local</h2><p class="muted small">Se guarda en este dispositivo. Más adelante podremos convertirlo en ranking compartido.</p><div id="ranklist"></div><div class="actions"><button class="btn secondary" onclick="home()">🏠 Volver</button></div></section>
+</main>
+
+<script>
+const banks={
+digital:[
+["La unidad mínima de información es:",["Byte","Píxel","Bit","Matriz"],2,"En tus apuntes: Bit = unidad mínima de información."],
+["El píxel es:",["Energía","Unidad de imagen","Tipo de radiación","Detector"],1,"En tus apuntes se define el píxel como unidad de imagen."],
+["La imagen digital se basa en:",["Película","Luz","Números","Calor"],2,"Tus apuntes destacan: DIGITAL = NÚMEROS."],
+["El PACS sirve para:",["Diagnóstico","Almacenamiento de imágenes","Generar RX","Aumentar contraste"],1,"PACS → almacenamiento y visualización."],
+["El RIS gestiona:",["Imágenes","Pacientes","Radiación","Energía"],1,"Tus apuntes: RIS → gestión de pacientes."],
+["En CR:",["Imagen directa","No hay lector","Usa chasis y lector","Es analógica"],2,"CR → chasis + lector."],
+["En DX directa:",["RX → luz → electricidad","RX → electricidad","Usa película","No es digital"],1,"Tus apuntes: DX directa → RX → electricidad."],
+["El efecto fotoeléctrico:",["Dispersa","Absorbe totalmente","No afecta","Reduce imagen"],1,"Tus apuntes: fotoeléctrico = absorción → imagen."],
+["El efecto Compton:",["Mejora contraste","Absorbe","Dispersa","No interactúa"],2,"Tus apuntes: Compton = dispersión → ruido."],
+["El kV controla:",["Cantidad","Energía","Tiempo","Ruido"],1,"Tus apuntes: kV → energía / penetración."],
+["El mA controla:",["Energía","Cantidad","Resolución","Contraste"],1,"Tus apuntes: mA → cantidad."],
+["El DQE mide:",["Resolución","Señal/ruido","Tiempo","Energía"],1,"Tus apuntes: DQE → relación señal/ruido."],
+["El nivel de ventana indica:",["Contraste","Zona visualizada","Ruido","Resolución"],1,"Tus apuntes: nivel → qué ves."],
+["El ancho de ventana controla:",["Resolución","Contraste","Energía","Tamaño"],1,"Tus apuntes: ancho → contraste."],
+["La tomosíntesis:",["Es 2D simple","Elimina superposición","Es RM","No se usa"],1,"Tus apuntes: tomosíntesis → elimina superposición."]
+],
+ris:[
+["¿Qué significa PACS?",["Patient Access Control System","Picture Archiving and Communication System","Patient Analysis and Care System","Process Archive and Control System"],1,"Según tus apuntes, PACS = Picture Archiving and Communication System."],
+["La función principal del PACS es:",["Gestionar citas de pacientes","Archivar y visualizar imágenes médicas","Emitir informes clínicos","Gestionar recursos humanos"],1,"PACS archiva, visualiza, manipula y comunica imágenes."],
+["¿Qué sistema gestiona la agenda y citas en radiología?",["PACS","HIS","RIS","LIS"],2,"RIS → agendar/citar y gestionar la actividad radiológica."],
+["¿Cuál es un componente del PACS?",["Sistema de facturación","Estaciones de diagnóstico","Laboratorio clínico","Farmacia hospitalaria"],1,"Tus apuntes incluyen estaciones de diagnóstico y revisión."],
+["¿Qué sistema gestiona la historia clínica global del hospital?",["PACS","RIS","HIS","RIS-PACS"],2,"La respuesta indicada en tus apuntes es HIS."],
+["¿Qué estándar se utiliza para la transmisión de imágenes médicas?",["HL7","JPEG","DICOM","PDF"],2,"Tus apuntes: DICOM es el estándar de comunicación de imágenes."],
+["¿Cuál de los siguientes NO es un componente del PACS?",["Servidor central","Modalidades de imagen","Estaciones de trabajo","Sistema de agenda de citas"],3,"La agenda/citas corresponde a la gestión del RIS."],
+["RIS y PACS trabajan de forma:",["Independiente","Manual","Integrada","Offline"],2,"Tus apuntes indican que RIS y PACS trabajan de forma integrada."],
+["¿Cuál es una función del RIS?",["Manipular imágenes","Archivar imágenes médicas","Gestión de informes radiológicos","Realizar reconstrucciones 3D"],2,"Tus apuntes incluyen el soporte al proceso informado y gestión radiológica."],
+["¿Qué tipo de archivo permite almacenamiento a largo plazo en PACS?",["RAM","Archivo clínico temporal","Sistema de archivo jerárquico","Memoria caché"],2,"En tus apuntes aparece el sistema de archivo a corto, medio y largo plazo."],
+["La comunicación entre sistemas sanitarios se realiza principalmente mediante:",["Bluetooth y WiFi","HL7 y DICOM","USB","PDF y Word"],1,"Tus apuntes señalan HL7 y DICOM."],
+["¿Cuál es una función principal del departamento de radiología digital?",["Solo generar informes","Archivar, ver, manipular y comunicar imágenes","Gestionar nóminas","Solo citar pacientes"],1,"Tus apuntes describen el trabajo con PACS para archivar, ver, manipular y comunicar."]
+]};
+let current=[],i=0,points=0,lastBank='';
+function hide(){['home','quiz','result','rank'].forEach(x=>document.getElementById(x).classList.add('hidden'))}
+function home(){hide();document.getElementById('home').classList.remove('hidden')}
+function start(bank){lastBank=bank;current=[...banks[bank]].sort(()=>Math.random()-.5);i=0;points=0;hide();document.getElementById('quiz').classList.remove('hidden');render()}
+function render(){let x=current[i];document.getElementById('count').textContent=`Pregunta ${i+1} de ${current.length}`;document.getElementById('pts').textContent=points+' puntos';document.getElementById('bar').style.width=(i/current.length*100)+'%';document.getElementById('q').textContent=x[0];let box=document.getElementById('answers');box.innerHTML='';x[1].forEach((a,n)=>{let b=document.createElement('button');b.className='answer';b.textContent=a;b.onclick=()=>answer(n,b);box.appendChild(b)});document.getElementById('feedback').classList.add('hidden');document.getElementById('next').classList.add('hidden')}
+function answer(n,btn){let x=current[i];[...document.querySelectorAll('.answer')].forEach((b,j)=>{b.disabled=true;if(j===x[2])b.classList.add('correct')});let ok=n===x[2];if(ok){points+=10;btn.classList.add('correct')}else btn.classList.add('wrong');let f=document.getElementById('feedback');f.innerHTML=(ok?'✅ <strong>¡Correcto!</strong>':'❌ <strong>Respuesta incorrecta</strong>')+'<br>'+x[3];f.classList.remove('hidden');document.getElementById('pts').textContent=points+' puntos';document.getElementById('next').classList.remove('hidden')}
+function next(){i++;if(i<current.length)render();else finish()}
+function finish(){hide();document.getElementById('result').classList.remove('hidden');let max=current.length*10,pct=Math.round(points/max*100);document.getElementById('score').textContent=`${points} / ${max}`;document.getElementById('resultText').textContent=pct>=80?'🔥 ¡Nivelazo!':pct>=60?'👏 ¡Muy bien! Sigue así.':'💪 Buen entrenamiento. Repite el test para mejorar.';let r=JSON.parse(localStorage.getItem('rank')||'[]');r.push({points,date:new Date().toLocaleDateString('es-ES'),bank:lastBank});r.sort((a,b)=>b.points-a.points);localStorage.setItem('rank',JSON.stringify(r.slice(0,10)))}
+function again(){start(lastBank)}
+function ranking(){hide();document.getElementById('rank').classList.remove('hidden');let r=JSON.parse(localStorage.getItem('rank')||'[]'),box=document.getElementById('ranklist');if(!r.length){box.innerHTML='<p class="muted">Todavía no hay puntuaciones.</p>';return}box.innerHTML=r.map((x,n)=>`<div class="rankrow"><span>${['🥇','🥈','🥉'][n]||'🏅 '+(n+1)} · ${x.bank==='digital'?'Radiología Digital':'RIS/PACS/DICOM'} · ${x.date}</span><strong>${x.points}</strong></div>`).join('')}
+</script></body></html>
