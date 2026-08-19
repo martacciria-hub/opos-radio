@@ -1,0 +1,56 @@
+name: Añadir módulos a la página principal
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update-home:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Añadir selector de módulos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          marker = '<!-- OPOS-RADIO-MODULES -->'
+          if marker in text:
+              print('El selector de módulos ya está presente.')
+              raise SystemExit(0)
+          block = '''<!-- OPOS-RADIO-MODULES -->\n<div class="card" style="margin-top:18px"><h2>📚 MÓDULOS DE ESTUDIO</h2><p class="small">Accede directamente al módulo que quieras estudiar.</p><div class="topics"><a class="topicBtn" href="modulo1.html" style="text-decoration:none;display:block"><b>📘 MÓDULO 1 · RADIOLOGÍA CONVENCIONAL</b><span>Temas 1–5 · Tests</span></a><a class="topicBtn" href="modulo2.html" style="text-decoration:none;display:block"><b>📗 MÓDULO 2 · RADIOLOGÍA DIGITAL</b><span>Temas 6–11 · Tests</span></a><a class="topicBtn" href="modulo3.html" style="text-decoration:none;display:block"><b>💊 MÓDULO 3 · FÁRMACOS EN RADIOLOGÍA · MEDIOS DE CONTRASTE</b><span>Temas 12–17 · Tests</span></a></div></div>'''
+          # Insertar justo antes de la sección de tests para no tocar el contenido de los temas.
+          anchor = '<section id="tests"'
+          if anchor not in text:
+              raise SystemExit('No se encontró el punto de inserción.')
+          text = text.replace(anchor, block + '<section id="tests"', 1)
+          p.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Crear acceso independiente al Módulo 1
+        run: |
+          if [ ! -f modulo1.html ]; then
+            python - <<'PY'
+            from pathlib import Path
+            # La página principal conserva el Módulo 1; este archivo sirve como acceso directo.
+            Path('modulo1.html').write_text('''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=index.html"><title>Opos-Radio · Módulo 1</title></head><body><p>Abriendo el Módulo 1…</p></body></html>''', encoding='utf-8')
+            PY
+          fi
+
+      - name: Publicar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html modulo1.html
+          if git diff --cached --quiet; then
+            echo "Sin cambios que publicar."
+          else
+            git commit -m "Añadir módulos 2 y 3 a la página principal"
+            git push
+          fi
