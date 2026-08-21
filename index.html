@@ -1,30 +1,34 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#17324d">
-<title>Opos-Radio</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17324d"><title>Opos-Radio</title>
 <style>
-:root{--b:#f4f7fa;--c:#fff;--t:#183044;--a:#256b9e;--bd:#d9e2ea}
-*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--t);font-family:Arial,sans-serif;line-height:1.55}
-header{background:var(--t);color:#fff;text-align:center;padding:28px 15px}header h1{margin:0;font-size:1.8rem}header div{margin-top:6px}
-.main{max-width:900px;margin:auto;padding:22px 14px}.card{background:var(--c);border:1px solid var(--bd);border-radius:20px;padding:22px;box-shadow:0 3px 14px #18304412;margin-bottom:18px}
-.module{display:block;text-decoration:none;color:var(--t);border:2px solid var(--bd);border-radius:16px;padding:18px;margin:12px 0;background:#fff;transition:.15s}
-.module:hover{border-color:var(--a);transform:translateY(-1px)}.module b{display:block;font-size:1.08rem;color:var(--a);margin-bottom:6px}.module span{color:#607080}
-</style>
-</head>
+:root{--b:#f4f7fa;--c:#fff;--t:#183044;--a:#256b9e;--bd:#d9e2ea;--soft:#eef4f8}
+*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--t);font-family:Arial,sans-serif;line-height:1.55;padding-bottom:78px}
+header{background:linear-gradient(135deg,#183044,#256b9e);color:#fff;text-align:center;padding:24px 15px}header h1{margin:0;font-size:1.75rem}header div{margin-top:5px}
+main{max-width:900px;margin:auto;padding:20px 14px}.card{background:var(--c);border:1px solid var(--bd);border-radius:20px;padding:20px;box-shadow:0 3px 14px #18304412;margin-bottom:18px}.hidden{display:none}
+.module{display:block;text-decoration:none;color:var(--t);border:2px solid var(--bd);border-radius:16px;padding:17px;margin:12px 0;background:#fff}.module:hover{border-color:var(--a)}.module b{display:block;color:var(--a);margin-bottom:5px}.module span{color:#607080;font-size:.94rem}
+.hero{background:linear-gradient(135deg,#fff,#eef4f8)}.big{font-size:1.15rem}.muted{color:#607080}.empty{text-align:center;padding:30px 12px;color:#607080}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);display:flex;justify-content:center;z-index:20;box-shadow:0 -3px 12px #18304412}.nav button{flex:1;max-width:180px;border:0;background:#fff;color:#607080;padding:11px 5px;font-weight:bold;cursor:pointer}.nav button.active{color:var(--a);background:var(--soft)}.icon{font-size:1.25rem;display:block}
+</style></head>
 <body>
 <header><h1>🩻 OPOS-RADIO</h1><div>Tu espacio de estudio</div></header>
-<main class="main">
-<div class="card">
-<h2>📚 Módulos de estudio</h2>
-<p>Accede directamente al módulo que quieras estudiar.</p>
-<a class="module" href="modulo1.html"><b>📘 MÓDULO 1 · RADIOLOGÍA CONVENCIONAL</b><span>Temas 1–5 · Tests</span></a>
-<a class="module" href="modulo2.html"><b>📗 MÓDULO 2 · RADIOLOGÍA DIGITAL</b><span>Temas 6–11 · Tests</span></a>
-<a class="module" href="modulo3.html"><b>💊 MÓDULO 3 · FÁRMACOS EN RADIOLOGÍA · MEDIOS DE CONTRASTE</b><span>Temas 12–17 · Tests</span></a>
-<a class="module" href="modulo4_completo.html"><b>📘 MÓDULO 4 · RADIOLOGÍA CONVENCIONAL</b><span>Temas 18–34 · Tema 22 pendiente · Integración completa</span></a>
-</div>
+<main>
+<section id="inicio">
+<div class="card hero"><h2>👋 ¡Bienvenida!</h2><p class="big">Tu espacio para preparar las oposiciones de TSIDMN.</p><p class="muted">Estudia por módulos y, cuando quieras, utilizaremos el Banco de Tests para practicar.</p></div>
+<div class="card"><h2>📌 Tu progreso</h2><p>Empieza por el módulo que estés preparando. Esta zona irá creciendo con tus avances.</p></div>
+</section>
+<section id="estudio" class="hidden">
+<div class="card"><h2>📚 Módulos de estudio</h2><p class="muted">Aquí están los contenidos de estudio. Los tests quedan fuera de los módulos y se incorporarán después al Banco.</p>
+<a class="module" href="estudio-modulo1.html"><b>📘 MÓDULO 1 · RADIOLOGÍA CONVENCIONAL</b><span>Temas 1–5</span></a>
+<a class="module" href="estudio-modulo2.html"><b>📗 MÓDULO 2 · RADIOLOGÍA DIGITAL</b><span>Temas 6–11</span></a>
+<a class="module" href="estudio-modulo3.html"><b>💊 MÓDULO 3 · FÁRMACOS Y MEDIOS DE CONTRASTE</b><span>Temas 12–17</span></a>
+<a class="module" href="estudio-modulo4.html"><b>📘 MÓDULO 4 · TÉCNICAS DE RADIOLOGÍA CONVENCIONAL</b><span>Temas 18–34 · contenido de estudio</span></a>
+</div></section>
+<section id="banco" class="hidden"><div class="card"><h2>📝 Banco de Tests</h2><div class="empty"><div style="font-size:2.5rem">🧪</div><h3>Banco preparado para empezar</h3><p>Aquí reuniremos todos los tests, separados por módulo y tema. De momento está vacío, tal como hemos decidido.</p></div></div></section>
+<section id="perfil" class="hidden"><div class="card"><h2>👤 Perfil</h2><div class="empty"><div style="font-size:2.5rem">✨</div><h3>Tu perfil</h3><p>Aquí podremos personalizar el avatar, nombre, progreso, puntos y futuras funciones de la app.</p></div></div></section>
 </main>
-</body>
-</html>
+<nav class="nav"><button class="active" onclick="show('inicio',this)"><span class="icon">🏠</span>Inicio</button><button onclick="show('estudio',this)"><span class="icon">📚</span>Estudio</button><button onclick="show('banco',this)"><span class="icon">📝</span>Banco</button><button onclick="show('perfil',this)"><span class="icon">👤</span>Perfil</button></nav>
+<script>function show(id,btn){document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');window.scrollTo(0,0)}</script>
+</body></html>
