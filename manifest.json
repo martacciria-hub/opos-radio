@@ -1,0 +1,21 @@
+{
+  "name": "RadTechCrew",
+  "short_name": "RadTechCrew",
+  "description": "Espacio de estudio para las oposiciones de Técnico Superior en Imagen para el Diagnóstico y Medicina Nuclear.",
+  "lang": "es",
+  "start_url": "/opos-radio/",
+  "scope": "/opos-radio/",
+  "display": "standalone",
+  "display_override": ["standalone"],
+  "orientation": "portrait-primary",
+  "background_color": "#f4f7fa",
+  "theme_color": "#17324d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
